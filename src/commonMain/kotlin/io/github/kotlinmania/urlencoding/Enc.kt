@@ -12,7 +12,7 @@ package io.github.kotlinmania.urlencoding
  *
  * The wrapped value must be a `String` or a `ByteArray`.
  */
-data class Encoded<T>(val value: T) {
+internal data class Encoded<T>(val value: T) {
 
     /**
      * Returns the percent-encoded form of the wrapped value.
