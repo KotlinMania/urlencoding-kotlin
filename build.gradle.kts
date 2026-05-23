@@ -199,7 +199,11 @@ kotlin {
         binaries.framework { baseName = "Urlencoding"; xcf.add(this) }
     }
     iosSimulatorArm64 {
-        binaries.framework { baseName = "Urlencoding"; xcf.add(this) }
+        binaries.framework {
+            baseName = "Urlencoding"
+            isStatic = true
+            xcf.add(this)
+        }
     }
     iosX64 {
         binaries.framework { baseName = "Urlencoding"; xcf.add(this) }
