@@ -1,15 +1,23 @@
-// port-lint: source src/dec.rs
+// port-lint: source dec.rs
 package io.github.kotlinmania.urlencoding
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class DecTest {
 
     @Test
     fun decBorrows() {
-        assertEquals("hello", decode("hello").getOrThrow())
-        assertEquals("hello ", decode("hello%20").getOrThrow())
-        assertEquals(" hello", decode("%20hello").getOrThrow())
+        val plain = "hello".encodeToByteArray()
+        assertTrue(decodeBinary(plain) === plain)
+
+        val trailingInput = "hello%20".encodeToByteArray()
+        val trailing = decodeBinary(trailingInput)
+        assertTrue(trailing !== trailingInput)
+        assertEquals("hello ", trailing.decodeToString())
+
+        val leading = decodeBinary("%20hello".encodeToByteArray())
+        assertEquals(" hello", leading.decodeToString())
     }
 }

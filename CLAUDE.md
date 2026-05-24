@@ -69,17 +69,18 @@ The discipline:
 
 ## Port-lint headers (REQUIRED)
 
-Every Kotlin file MUST start with:
+Every Kotlin file MUST start with the path relative to `.ast_distance_config.json`'s
+source root, currently `tmp/urlencoding/src`:
 
 ```kotlin
-// port-lint: source <path-relative-to-tmp/urlencoding>
+// port-lint: source <path-relative-to-tmp/urlencoding/src>
 package io.github.kotlinmania.urlencoding
 ```
 
 Example:
 
 ```kotlin
-// port-lint: source src/lib.rs
+// port-lint: source lib.rs
 package io.github.kotlinmania.urlencoding
 ```
 
