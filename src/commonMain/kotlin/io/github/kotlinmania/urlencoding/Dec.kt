@@ -1,4 +1,4 @@
-// port-lint: source src/dec.rs
+// port-lint: source dec.rs
 package io.github.kotlinmania.urlencoding
 
 internal fun fromHexDigit(digit: Byte): Int? {
@@ -42,19 +42,14 @@ fun decodeBinary(data: ByteArray): ByteArray {
         return data
     }
 
-    val decoded = ByteArray(data.size)
-    var outLen = 0
-    for (i in 0 until offset) {
-        decoded[outLen++] = data[i]
-    }
+    val out = NeverRealloc(ByteArray(data.size))
+    out.extendFromSlice(data, 0, offset)
 
     var d = offset
     while (true) {
         var nextPct = d
         while (nextPct < data.size && data[nextPct] != pct) nextPct++
-        for (i in d until nextPct) {
-            decoded[outLen++] = data[i]
-        }
+        out.extendFromSlice(data, d, nextPct)
         if (nextPct >= data.size) {
             break
         }
@@ -68,25 +63,47 @@ fun decodeBinary(data: ByteArray): ByteArray {
             if (firstVal != null) {
                 val secondVal = fromHexDigit(second)
                 if (secondVal != null) {
-                    decoded[outLen++] = ((firstVal shl 4) or secondVal).toByte()
+                    out.push(((firstVal shl 4) or secondVal).toByte())
                     d = restStart + 2
                 } else {
-                    decoded[outLen++] = pct
-                    decoded[outLen++] = first
+                    out.push(pct)
+                    out.push(first)
                     d = restStart + 1
                 }
             } else {
-                decoded[outLen++] = pct
+                out.push(pct)
                 d = restStart
             }
         } else {
-            decoded[outLen++] = pct
-            for (i in restStart until data.size) {
-                decoded[outLen++] = data[i]
-            }
+            out.push(pct)
+            out.extendFromSlice(data, restStart, data.size)
             break
         }
     }
 
-    return decoded.copyOf(outLen)
+    return out.toByteArray()
+}
+
+private class NeverRealloc(private val bytes: ByteArray) {
+    var size: Int = 0
+        private set
+
+    fun push(value: Byte) {
+        // These branches only exist to remove redundant reallocation work:
+        // the capacity is always sufficient for decoded percent data.
+        if (size != bytes.size) {
+            bytes[size] = value
+            size += 1
+        }
+    }
+
+    fun extendFromSlice(value: ByteArray, startIndex: Int = 0, endIndex: Int = value.size) {
+        val count = endIndex - startIndex
+        if (bytes.size - size >= count) {
+            value.copyInto(bytes, destinationOffset = size, startIndex = startIndex, endIndex = endIndex)
+            size += count
+        }
+    }
+
+    fun toByteArray(): ByteArray = bytes.copyOf(size)
 }

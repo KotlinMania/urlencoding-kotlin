@@ -1,4 +1,4 @@
-// port-lint: source src/enc.rs
+// port-lint: source enc.rs
 package io.github.kotlinmania.urlencoding
 
 /**

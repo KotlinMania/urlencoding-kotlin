@@ -1,4 +1,4 @@
-// port-lint: source src/lib.rs
+// port-lint: source lib.rs
 package io.github.kotlinmania.urlencoding
 
 /**
@@ -32,15 +32,11 @@ package io.github.kotlinmania.urlencoding
  * ```
  *
  * Where the upstream returns its own borrowed/owned distinction to avoid allocating
- * when decoding/encoding is not needed, this Kotlin port returns plain `String` and
- * `ByteArray`. `decodeBinary` still returns the same `ByteArray` reference when the
- * input contains no `%`.
+ * when decoding or encoding is not needed, this Kotlin port returns plain `String`
+ * and `ByteArray`. `decodeBinary` still returns the same `ByteArray` reference when
+ * the input contains no `%`.
  */
 
-// Re-export ledger (translation tracking; symbols already live at this package root).
-//
-// pub use enc::encode;
-// pub use enc::encode_binary;
-// pub use enc::Encoded;
-// pub use dec::decode;
-// pub use dec::decode_binary;
+// Crate-root export ledger: upstream exposes encode, encodeBinary, Encoded,
+// decode, and decodeBinary from its encoding and decoding modules. Kotlin keeps
+// those declarations at this package root without bridge aliases.
