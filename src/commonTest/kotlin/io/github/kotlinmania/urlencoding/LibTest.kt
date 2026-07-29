@@ -7,7 +7,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class LibTest {
-
     @Test
     fun itEncodesSuccessfully() {
         val expected = "this%20that"

@@ -12,8 +12,9 @@ package io.github.kotlinmania.urlencoding
  *
  * The wrapped value must be a `String` or a `ByteArray`.
  */
-internal data class Encoded<T>(val value: T) {
-
+internal data class Encoded<T>(
+    val value: T,
+) {
     /**
      * Returns the percent-encoded form of the wrapped value.
      */
@@ -53,13 +54,14 @@ internal data class Encoded<T>(val value: T) {
     }
 }
 
-private fun asBytes(value: Any?): ByteArray = when (value) {
-    is String -> value.encodeToByteArray()
-    is ByteArray -> value
-    else -> throw IllegalArgumentException(
-        "Encoded value must be String or ByteArray, got ${value?.let { it::class }}"
-    )
-}
+private fun asBytes(value: Any?): ByteArray =
+    when (value) {
+        is String -> value.encodeToByteArray()
+        is ByteArray -> value
+        else -> throw IllegalArgumentException(
+            "Encoded value must be String or ByteArray, got ${value?.let { it::class }}",
+        )
+    }
 
 /**
  * Percent-encodes every byte except alphanumerics and `-`, `_`, `.`, `~`. Assumes UTF-8 encoding.
@@ -92,10 +94,14 @@ private inline fun encodeInto(
         var asciiLen = 0
         while (off + asciiLen < data.size) {
             val c = data[off + asciiLen].toInt() and 0xFF
-            val safe = (c in '0'.code..'9'.code) ||
-                (c in 'A'.code..'Z'.code) ||
-                (c in 'a'.code..'z'.code) ||
-                c == '-'.code || c == '.'.code || c == '_'.code || c == '~'.code
+            val safe =
+                (c in '0'.code..'9'.code) ||
+                    (c in 'A'.code..'Z'.code) ||
+                    (c in 'a'.code..'z'.code) ||
+                    c == '-'.code ||
+                    c == '.'.code ||
+                    c == '_'.code ||
+                    c == '~'.code
             if (!safe) break
             asciiLen++
         }
@@ -119,7 +125,8 @@ private inline fun encodeInto(
     return false
 }
 
-private fun toHexDigit(digit: Int): Char = when (digit) {
-    in 0..9 -> ('0'.code + digit).toChar()
-    else -> ('A'.code - 10 + digit).toChar()
-}
+private fun toHexDigit(digit: Int): Char =
+    when (digit) {
+        in 0..9 -> ('0'.code + digit).toChar()
+        else -> ('A'.code - 10 + digit).toChar()
+    }
