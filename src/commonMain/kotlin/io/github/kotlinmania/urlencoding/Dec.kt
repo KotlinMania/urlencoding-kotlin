@@ -84,7 +84,9 @@ fun decodeBinary(data: ByteArray): ByteArray {
     return out.toByteArray()
 }
 
-private class NeverRealloc(private val bytes: ByteArray) {
+private class NeverRealloc(
+    private val bytes: ByteArray,
+) {
     var size: Int = 0
         private set
 

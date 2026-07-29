@@ -6,7 +6,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class DecTest {
-
     @Test
     fun decBorrows() {
         val plain = "hello".encodeToByteArray()
