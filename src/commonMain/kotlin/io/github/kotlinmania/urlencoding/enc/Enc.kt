@@ -1,12 +1,12 @@
 // port-lint: source enc.rs
-package io.github.kotlinmania.urlencoding
+package io.github.kotlinmania.urlencoding.enc
 
 /**
  * Wrapper type that implements `toString`. Encodes on the fly, without allocating.
  * Percent-encodes every byte except alphanumerics and `-`, `_`, `.`, `~`. Assumes UTF-8 encoding.
  *
  * ```kotlin
- * import io.github.kotlinmania.urlencoding.Encoded
+ * import io.github.kotlinmania.urlencoding.enc.Encoded
  * "${Encoded("hello!")}"
  * ```
  *
@@ -30,6 +30,13 @@ internal data class Encoded<T>(
      */
     fun write(writer: (String) -> Unit) {
         encodeInto(asBytes(value), false) { s -> writer(s) }
+    }
+
+    /**
+     * Performs urlencoding into a formatter or string builder.
+     */
+    fun fmt(f: StringBuilder) {
+        encodeInto(asBytes(value), false) { s -> f.append(s) }
     }
 
     /**
@@ -58,9 +65,7 @@ private fun asBytes(value: Any?): ByteArray =
     when (value) {
         is String -> value.encodeToByteArray()
         is ByteArray -> value
-        else -> throw IllegalArgumentException(
-            "Encoded value must be String or ByteArray, got ${value?.let { it::class }}",
-        )
+        else -> throw IllegalArgumentException("Encoded value must be String or ByteArray, got $value")
     }
 
 /**
