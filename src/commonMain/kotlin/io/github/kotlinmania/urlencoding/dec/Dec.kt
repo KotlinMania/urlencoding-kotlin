@@ -1,14 +1,12 @@
 // port-lint: source dec.rs
-package io.github.kotlinmania.urlencoding
+package io.github.kotlinmania.urlencoding.dec
 
 internal fun fromHexDigit(digit: Byte): Int? {
     val c = digit.toInt() and 0xFF
-    return when (c) {
-        in '0'.code..'9'.code -> c - '0'.code
-        in 'A'.code..'F'.code -> c - 'A'.code + 10
-        in 'a'.code..'f'.code -> c - 'a'.code + 10
-        else -> null
-    }
+    if (c in 0x30..0x39) return c - 0x30
+    if (c in 0x41..0x46) return c - 0x41 + 10
+    if (c in 0x61..0x66) return c - 0x61 + 10
+    return null
 }
 
 /**

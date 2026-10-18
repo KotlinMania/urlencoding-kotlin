@@ -1,8 +1,8 @@
-import Testing
+import XCTest
 import Urlencoding
 
-@Suite struct UrlencodingExportTests {
-    @Test func testSwiftModuleLoads() throws {
-        #expect(encode(data: "this that") == "this%20that")
+final class UrlencodingExportTests: XCTestCase {
+    func testSwiftModuleLoads() throws {
+        XCTAssertEqual(enc.encode(data: "this that"), "this%20that")
     }
 }

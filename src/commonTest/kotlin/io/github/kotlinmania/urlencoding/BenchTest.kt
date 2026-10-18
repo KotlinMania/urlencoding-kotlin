@@ -1,6 +1,8 @@
 // port-lint: tests benches/bench.rs
 package io.github.kotlinmania.urlencoding
 
+import io.github.kotlinmania.urlencoding.dec.decode
+import io.github.kotlinmania.urlencoding.enc.encode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

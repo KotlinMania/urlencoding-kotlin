@@ -1,23 +1,25 @@
-// port-lint: source lib.rs
-package io.github.kotlinmania.urlencoding
+// port-lint: tests dec.rs
+package io.github.kotlinmania.urlencoding.dec
 
+import io.github.kotlinmania.urlencoding.enc.encode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class LibTest {
+class DecTest {
     @Test
-    fun itEncodesSuccessfully() {
-        val expected = "this%20that"
-        assertEquals(expected, encode("this that"))
-    }
+    fun decBorrows() {
+        val plain = "hello".encodeToByteArray()
+        assertTrue(decodeBinary(plain) === plain)
 
-    @Test
-    fun itEncodesSuccessfullyEmoji() {
-        val emojiString = "👾 Exterminate!"
-        val expected = "%F0%9F%91%BE%20Exterminate%21"
-        assertEquals(expected, encode(emojiString))
+        val trailingInput = "hello%20".encodeToByteArray()
+        val trailing = decodeBinary(trailingInput)
+        assertTrue(trailing !== trailingInput)
+        assertEquals("hello ", trailing.decodeToString())
+
+        val leading = decodeBinary("%20hello".encodeToByteArray())
+        assertEquals(" hello", leading.decodeToString())
     }
 
     @Test
@@ -68,18 +70,6 @@ class LibTest {
         assertEquals("this%2that", decode("this%2that").getOrThrow())
         assertEquals("this%%2that", decode("this%%2that").getOrThrow())
         assertEquals("this%2x&that", decode("this%2x%26that").getOrThrow())
-        // assertEquals("this%2&that", decode("this%2%26that").getOrThrow())
-    }
-
-    @Test
-    fun lazyWriter() {
-        val s = StringBuilder("he")
-        Encoded("llo").appendTo(s)
-        assertEquals("hello", s.toString())
-
-        assertEquals("hello", Encoded("hello").toString())
-        assertEquals("hello", "${Encoded("hello")}")
-        assertEquals("hello", Encoded("hello").toStr())
     }
 
     @Test
